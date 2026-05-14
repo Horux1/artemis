@@ -1,0 +1,37 @@
+:root {
+    /* Backgrounds */
+    --bg-deep: #04000d;
+    --bg-mid: #0a0420;
+
+    /* Brand violets */
+    --violet: #8b3fff;
+    --violet-bright: #b876ff;
+    --violet-deep: #5b21b6;
+    --violet-glow: rgba(184, 118, 255, 0.5);
+
+    /* Neutrals */
+    --white: #f5f0ff;
+    --muted: #a89cc8;
+
+    /* Lines and borders */
+    --line: rgba(184, 118, 255, 0.4);
+    --line-soft: rgba(184, 118, 255, 0.15);
+
+    /* Typography */
+    --font-display: 'Syncopate', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+    --font-body: 'Inter', sans-serif;
+
+    /* Spacing scale */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 3rem;
+    --space-xl: 6rem;
+
+    /* Z-index scale */
+    --z-background: 0;
+    --z-content: 1;
+    --z-nav: 100;
+    --z-overlay: 200;
+}

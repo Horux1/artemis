@@ -1,0 +1,463 @@
+---
+/**
+ * Passport section — the finale.
+ *
+ * Full-viewport section with decorative side HUDs and a center area.
+ * The center starts with a mission code verification box. On entering
+ * the correct code, the box fades out and a welcome message + the
+ * recipient's name appears, followed by the 3 badges dropping in with
+ * a stagger animation and their download buttons.
+ */
+import PhaseIndicator from '../act2-orion/PhaseIndicator.astro';
+import Telemetry from '../act2-orion/Telemetry.astro';
+---
+
+<section class="passport" id="passport">
+  <!-- LEFT decorative HUD -->
+  <div class="hud hud-left">
+    <PhaseIndicator />
+  </div>
+
+  <!-- RIGHT decorative HUD -->
+  <div class="hud hud-right">
+    <Telemetry />
+  </div>
+
+  <!-- CENTER content -->
+  <div class="passport-center">
+    <!-- Initial state: mission code verification box -->
+    <div class="verify-box" id="verify-box">
+      <span class="verify-label">Enter your mission code</span>
+      <span class="verify-sub">Artemis II · Virtual Guest Program</span>
+      <input
+        type="text"
+        class="verify-input"
+        id="verify-input"
+        placeholder="M2M••••••••AII"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button class="verify-btn" id="verify-btn">Verify</button>
+      <span class="verify-error" id="verify-error">Invalid code — check and try again</span>
+    </div>
+
+    <!-- Revealed state: message + name + badges (hidden initially) -->
+    <div class="reveal" id="reveal">
+      <div class="welcome-msg" id="welcome-msg">
+        <span class="welcome-line">Thank you for coming aboard.</span>
+        <span class="welcome-line">We hope you enjoyed the journey.</span>
+        <span class="welcome-name">RIFA TAMANNA SUBARNA</span>
+        <span class="welcome-role">Honorary Crew Member · Artemis II</span>
+      </div>
+
+      <div class="badges-grid" id="badges-grid">
+        <div class="badge-slot">
+          <div class="badge" id="badge-1">
+            <img src="/assets/badge-2.png" alt="Artemis II Launch Badge" />
+          </div>
+          <a class="dl-btn" href="/assets/badge-2.png" download="artemis-ii-launch.png">
+            ↓ Launch
+          </a>
+        </div>
+
+        <div class="badge-slot">
+          <div class="badge" id="badge-2">
+            <img src="/assets/badge-3.png" alt="Artemis II Crew Badge" />
+          </div>
+          <a class="dl-btn" href="/assets/badge-3.png" download="artemis-ii-crew.png">
+            ↓ Crew
+          </a>
+        </div>
+
+        <div class="badge-slot">
+          <div class="badge" id="badge-3">
+            <img src="/assets/badge-1.png" alt="Artemis II Splashdown Badge" />
+          </div>
+          <a class="dl-btn" href="/assets/badge-1.png" download="artemis-ii-splashdown.png">
+            ↓ Splashdown
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { animate, utils, stagger } from 'animejs';
+
+  const CORRECT_CODE = 'M2M2026238900AII';
+
+  const verifyBox = document.getElementById('verify-box');
+  const verifyInput = document.getElementById('verify-input') as HTMLInputElement | null;
+  const verifyBtn = document.getElementById('verify-btn');
+  const verifyError = document.getElementById('verify-error');
+  const reveal = document.getElementById('reveal');
+
+  /**
+   * Normalize a code for comparison: uppercase, no spaces.
+   */
+  function normalize(value: string): string {
+    return value.toUpperCase().replace(/\s+/g, '');
+  }
+
+  function runReveal(): void {
+    if (!verifyBox || !reveal) return;
+
+    // Fade out the verify box
+    animate(verifyBox, {
+      opacity: [1, 0],
+      scale: [1, 0.95],
+      duration: 400,
+      ease: 'outQuad',
+      onComplete: () => {
+        verifyBox.style.display = 'none';
+      },
+    });
+
+    reveal.classList.add('active');
+
+    // Welcome message fades in first
+    animate('#welcome-msg', {
+      opacity: [0, 1],
+      translateY: [20, 0],
+      duration: 800,
+      delay: 400,
+      ease: 'outExpo',
+    });
+
+    // The 3 badges drop in with stagger, then start levitating
+    animate('.badge', {
+      opacity: [0, 1],
+      translateY: [-200, 0],
+      scale: [1.5, 1],
+      rotate: [-15, 0],
+      duration: 900,
+      delay: stagger(250, { start: 1200 }),
+      ease: 'outBack',
+      onComplete: startLevitation,
+    });
+
+    // Download buttons fade in last
+    animate('.dl-btn', {
+      opacity: [0, 1],
+      translateY: [10, 0],
+      duration: 500,
+      delay: stagger(100, { start: 2300 }),
+      ease: 'outExpo',
+    });
+  }
+
+  /**
+   * Make each badge float gently and continuously, as if suspended in
+   * zero gravity. Each badge gets its own duration, delay, and travel
+   * distance so the three never move in lockstep — the effect looks
+   * organic rather than mechanical.
+   */
+  function startLevitation(): void {
+    const badges = [
+      document.getElementById('badge-1'),
+      document.getElementById('badge-2'),
+      document.getElementById('badge-3'),
+    ];
+
+    // Per-badge float settings — deliberately different values
+    const configs = [
+      { y: 12, rot: 2.5, dur: 3200, delay: 0 },
+      { y: 16, rot: -3, dur: 3800, delay: 250 },
+      { y: 10, rot: 2, dur: 3500, delay: 500 },
+    ];
+
+    badges.forEach((badge, i) => {
+      if (!badge) return;
+      const cfg = configs[i];
+
+      // Vertical bob — up and back down, looping forever
+      animate(badge, {
+        translateY: [0, -cfg.y, 0],
+        duration: cfg.dur,
+        delay: cfg.delay,
+        loop: true,
+        ease: 'inOutSine',
+      });
+
+      // Gentle tilt — slight rotation sway, looping forever, slightly
+      // different duration than the bob so they drift in and out of phase
+      animate(badge, {
+        rotate: [0, cfg.rot, 0],
+        duration: cfg.dur * 1.3,
+        delay: cfg.delay,
+        loop: true,
+        ease: 'inOutSine',
+      });
+    });
+  }
+
+  function showError(): void {
+    if (!verifyError || !verifyInput) return;
+    verifyError.classList.add('visible');
+    // Shake the input
+    animate(verifyInput, {
+      translateX: [0, -8, 8, -6, 6, -3, 3, 0],
+      duration: 400,
+      ease: 'inOutQuad',
+    });
+  }
+
+  function attempt(): void {
+    if (!verifyInput) return;
+    const entered = normalize(verifyInput.value);
+    if (entered === CORRECT_CODE) {
+      runReveal();
+    } else {
+      showError();
+    }
+  }
+
+  if (verifyBtn) {
+    verifyBtn.addEventListener('click', attempt);
+  }
+
+  if (verifyInput) {
+    // Enter key submits
+    verifyInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') attempt();
+    });
+    // Hide the error message as soon as they start editing again
+    verifyInput.addEventListener('input', () => {
+      verifyError?.classList.remove('visible');
+    });
+  }
+</script>
+
+<style>
+  .passport {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem var(--space-lg) var(--space-lg);
+  }
+
+  .hud {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+  }
+  .hud-left {
+    left: var(--space-lg);
+  }
+  .hud-right {
+    right: var(--space-lg);
+  }
+
+  .passport-center {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ===== Verification box ===== */
+  .verify-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 2.5rem 3rem;
+    background: rgba(139, 63, 255, 0.1);
+    border: 1px solid var(--violet);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .verify-label {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--white);
+  }
+
+  .verify-sub {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--violet-bright);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .verify-input {
+    width: 100%;
+    min-width: 280px;
+    padding: 0.9rem 1.2rem;
+    background: rgba(4, 0, 13, 0.6);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--white);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+    text-align: center;
+    text-transform: uppercase;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .verify-input::placeholder {
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  .verify-input:focus {
+    border-color: var(--violet-bright);
+    box-shadow: 0 0 20px var(--violet-glow);
+  }
+
+  .verify-btn {
+    margin-top: 1rem;
+    padding: 0.8rem 2.5rem;
+    background: var(--violet);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .verify-btn:hover {
+    background: var(--violet-bright);
+    box-shadow: 0 0 30px var(--violet-glow);
+    transform: translateY(-2px);
+  }
+
+  .verify-error {
+    margin-top: 0.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    color: #ff6b9d;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .verify-error.visible {
+    opacity: 1;
+  }
+
+  /* ===== Reveal container ===== */
+  .reveal {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+  }
+  .reveal.active {
+    display: flex;
+  }
+
+  .welcome-msg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    text-align: center;
+    opacity: 0;
+  }
+  .welcome-line {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    color: var(--white);
+  }
+  .welcome-name {
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: linear-gradient(135deg, var(--violet-bright), #ff79c6 80%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .welcome-role {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    color: var(--violet-bright);
+    text-transform: uppercase;
+  }
+
+  .badges-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    width: 100%;
+  }
+
+  .badge-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .badge {
+    width: 100%;
+    aspect-ratio: 1;
+    opacity: 0;
+    filter: drop-shadow(0 10px 30px rgba(184, 118, 255, 0.3));
+  }
+  .badge img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .dl-btn {
+    padding: 0.7rem 1.2rem;
+    background: transparent;
+    color: var(--violet-bright);
+    border: 1px solid var(--violet);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    opacity: 0;
+  }
+  .dl-btn:hover {
+    background: var(--violet);
+    color: white;
+    box-shadow: 0 0 20px var(--violet-glow);
+  }
+
+  @media (max-width: 900px) {
+    .hud-left,
+    .hud-right {
+      display: none;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .badges-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    .verify-box {
+      padding: 2rem 1.5rem;
+    }
+    .verify-input {
+      min-width: 0;
+    }
+  }
+</style>

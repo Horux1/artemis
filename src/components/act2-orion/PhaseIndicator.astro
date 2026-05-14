@@ -1,0 +1,34 @@
+---
+/**
+ * Phase indicator HUD — now a static decorative element in the
+ * passport section's left column.
+ */
+---
+
+<div class="phase-indicator">
+  <span class="num">PHASE 05 / 05</span>
+  <span class="text">PASSPORT</span>
+</div>
+
+<style>
+  .phase-indicator {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--violet-bright);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-left: 2px solid var(--violet-bright);
+    padding-left: 1rem;
+  }
+  .phase-indicator .num {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+  .phase-indicator .text {
+    font-weight: 700;
+    color: var(--white);
+    display: block;
+  }
+</style>

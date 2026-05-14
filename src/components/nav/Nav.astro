@@ -1,0 +1,82 @@
+---
+/**
+ * Top navigation bar.
+ *
+ * Fixed at the top, with a violet triangular logo mark (echoing the
+ * triangular badge shape) and the mission metadata on the right.
+ * Has a subtle backdrop blur so content scrolling underneath stays
+ * legible.
+ */
+---
+
+<nav class="nav">
+    <div class="logo">
+        <div class="logo-mark" aria-hidden="true"></div>
+        <span class="logo-text">ARTEMIS II</span>
+    </div>
+
+    <div class="nav-meta">
+        KENNEDY SPACE CENTER · LC-39B ·
+        <span class="highlight">T-MINUS 2026</span>
+    </div>
+</nav>
+
+<style>
+    .nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: var(--z-nav);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-md) var(--space-lg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        background: rgba(4, 0, 13, 0.5);
+        border-bottom: 1px solid var(--line-soft);
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .logo-mark {
+        width: 26px;
+        height: 26px;
+        background: var(--violet-bright);
+        clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+        box-shadow: 0 0 20px var(--violet-glow);
+    }
+
+    .logo-text {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 0.95rem;
+        letter-spacing: 0.15em;
+    }
+
+    .nav-meta {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--muted);
+        letter-spacing: 0.1em;
+    }
+
+    .nav-meta .highlight {
+        color: var(--violet-bright);
+    }
+
+    /* Hide telemetry on small screens to keep nav clean */
+    @media (max-width: 768px) {
+        .nav {
+            padding: var(--space-sm) var(--space-md);
+        }
+        .nav-meta {
+            display: none;
+        }
+    }
+</style>

@@ -1,0 +1,29 @@
+---
+/**
+ * Static background — the Carina Nebula image, fixed position, covering
+ * the entire viewport always. No parallax, no extra layers, no scripts.
+ *
+ * Sits at z-index 0 so all content stacks on top.
+ */
+---
+
+<div class="bg" aria-hidden="true"></div>
+
+<style>
+  .bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url('/assets/carina.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--bg-deep);
+  }
+</style>

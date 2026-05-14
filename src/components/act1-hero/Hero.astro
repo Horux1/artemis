@@ -1,0 +1,185 @@
+---
+/**
+ * Act 1 — Hero.
+ *
+ * The opening shot of the experience. A full-viewport centered layout
+ * that fades in 4 elements sequentially:
+ *   1. Mission tag (e.g. "— MISSION · ARTEMIS II —")
+ *   2. Big title "Orion Spacecraft" with violet gradient on "Orion"
+ *   3. Subtitle mentioning the four astronauts + "you"
+ *   4. "SCROLL TO BEGIN" hint with pulsing arrow
+ *
+ * Animations are one-shot, triggered on page load. They use anime.js
+ * because we want eased easing and staggered delays.
+ */
+---
+
+<section class="hero">
+    <div class="mission-tag" id="hero-tag">MISSION · ARTEMIS II</div>
+
+    <h1 class="hero-title" id="hero-title">
+        <span class="accent">Orion</span><br />
+        Spacecraft.
+    </h1>
+
+    <p class="hero-subtitle" id="hero-subtitle">
+        A 10-day journey beyond low Earth orbit. The first crewed flight of
+        NASA's Artemis program. Wiseman, Glover, Koch, Hansen — and you.
+    </p>
+
+    <div class="scroll-hint" id="hero-hint">
+        <span>SCROLL TO BEGIN</span>
+        <div class="arrow" aria-hidden="true"></div>
+    </div>
+</section>
+
+<script>
+    import { animate } from "animejs";
+
+    /**
+     * Sequential fade-in animation for the hero elements.
+     * Each step starts a bit after the previous so the eye can follow.
+     */
+
+    animate("#hero-tag", {
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 800,
+        delay: 200,
+        ease: "outExpo",
+    });
+
+    animate("#hero-title", {
+        opacity: [0, 1],
+        translateY: [40, 0],
+        duration: 1100,
+        delay: 500,
+        ease: "outExpo",
+    });
+
+    animate("#hero-subtitle", {
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 900,
+        delay: 1100,
+        ease: "outExpo",
+    });
+
+    animate("#hero-hint", {
+        opacity: [0, 1],
+        duration: 800,
+        delay: 1700,
+        ease: "outExpo",
+    });
+</script>
+
+<style>
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 6rem var(--space-lg) var(--space-lg);
+        position: relative;
+    }
+
+    /* All four elements start invisible. anime.js fades them in on load. */
+    .mission-tag,
+    .hero-title,
+    .hero-subtitle,
+    .scroll-hint {
+        opacity: 0;
+    }
+
+    .mission-tag {
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+        color: var(--violet-bright);
+        letter-spacing: 0.4em;
+        margin-bottom: var(--space-md);
+    }
+
+    /* The em dashes flanking the mission tag */
+    .mission-tag::before,
+    .mission-tag::after {
+        content: "—";
+        margin: 0 1rem;
+        color: var(--muted);
+    }
+
+    .hero-title {
+        font-family: var(--font-display);
+        font-size: clamp(3rem, 9vw, 8rem);
+        line-height: 0.9;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-bottom: var(--space-sm);
+    }
+
+    /* The "Orion" word gets a violet-to-magenta gradient */
+    .hero-title .accent {
+        background: linear-gradient(135deg, var(--violet-bright), #ff79c6 80%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+    }
+
+    .hero-subtitle {
+        color: var(--muted);
+        font-size: 1.15rem;
+        max-width: 540px;
+        margin: 0 auto var(--space-xl);
+    }
+
+    .scroll-hint {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--muted);
+        letter-spacing: 0.3em;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        position: absolute;
+        bottom: 3rem;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* A vertical fading line that pulses down — invites the scroll */
+    .scroll-hint .arrow {
+        width: 1px;
+        height: 50px;
+        background: linear-gradient(180deg, var(--violet-bright), transparent);
+        animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+        0%,
+        100% {
+            opacity: 0.3;
+            transform: translateY(0);
+        }
+        50% {
+            opacity: 1;
+            transform: translateY(10px);
+        }
+    }
+
+    /* Respect reduced motion: skip the animations entirely */
+    @media (prefers-reduced-motion: reduce) {
+        .mission-tag,
+        .hero-title,
+        .hero-subtitle,
+        .scroll-hint {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+        .scroll-hint .arrow {
+            animation: none;
+        }
+    }
+</style>

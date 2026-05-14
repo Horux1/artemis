@@ -1,0 +1,28 @@
+---
+/**
+ * Telemetry HUD — static decorative element in the passport section's
+ * right column.
+ */
+---
+
+<div class="telemetry">
+  <div>VEHICLE <span>ORION-AII</span></div>
+  <div>MASS <span>25,848 kg</span></div>
+  <div>CREW <span>4 + 1</span></div>
+  <div>STATUS <span>DELIVERED</span></div>
+</div>
+
+<style>
+  .telemetry {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.8;
+    letter-spacing: 0.1em;
+  }
+  .telemetry div span {
+    color: var(--violet-bright);
+    margin-left: 0.5rem;
+  }
+</style>
