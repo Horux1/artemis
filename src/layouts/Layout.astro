@@ -36,6 +36,28 @@ const {
             href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syncopate:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap"
             rel="stylesheet"
         />
+
+        <style is:global>
+            /* Safety: never allow horizontal scroll on any device */
+            html,
+            body {
+                overflow-x: hidden;
+                max-width: 100%;
+            }
+            /* Fixed nav is ~60-70px tall; offset anchor scrolling */
+            html {
+                scroll-padding-top: 80px;
+            }
+            /* Fluid base font size: scales slightly down on small screens */
+            :root {
+                font-size: 16px;
+            }
+            @media (max-width: 600px) {
+                :root {
+                    font-size: 15px;
+                }
+            }
+        </style>
     </head>
     <body>
         <slot />

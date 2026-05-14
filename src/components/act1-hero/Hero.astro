@@ -81,11 +81,10 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        padding: 6rem var(--space-lg) var(--space-lg);
+        padding: 6rem var(--space-lg) 8rem;
         position: relative;
     }
 
-    /* All four elements start invisible. anime.js fades them in on load. */
     .mission-tag,
     .hero-title,
     .hero-subtitle,
@@ -101,7 +100,6 @@
         margin-bottom: var(--space-md);
     }
 
-    /* The em dashes flanking the mission tag */
     .mission-tag::before,
     .mission-tag::after {
         content: "—";
@@ -111,14 +109,13 @@
 
     .hero-title {
         font-family: var(--font-display);
-        font-size: clamp(3rem, 9vw, 8rem);
+        font-size: clamp(2.5rem, 9vw, 8rem);
         line-height: 0.9;
         font-weight: 700;
         letter-spacing: -0.02em;
         margin-bottom: var(--space-sm);
     }
 
-    /* The "Orion" word gets a violet-to-magenta gradient */
     .hero-title .accent {
         background: linear-gradient(135deg, var(--violet-bright), #ff79c6 80%);
         -webkit-background-clip: text;
@@ -129,9 +126,9 @@
 
     .hero-subtitle {
         color: var(--muted);
-        font-size: 1.15rem;
+        font-size: clamp(0.95rem, 2.5vw, 1.15rem);
         max-width: 540px;
-        margin: 0 auto var(--space-xl);
+        margin: 0 auto;
     }
 
     .scroll-hint {
@@ -144,12 +141,11 @@
         align-items: center;
         gap: 0.5rem;
         position: absolute;
-        bottom: 3rem;
+        bottom: 2rem;
         left: 50%;
         transform: translateX(-50%);
     }
 
-    /* A vertical fading line that pulses down — invites the scroll */
     .scroll-hint .arrow {
         width: 1px;
         height: 50px;
@@ -169,7 +165,39 @@
         }
     }
 
-    /* Respect reduced motion: skip the animations entirely */
+    /* Mobile: tighter spacing, smaller mission tag */
+    @media (max-width: 600px) {
+        .hero {
+            padding: 5rem var(--space-md) 7rem;
+        }
+        .mission-tag {
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
+        }
+        .mission-tag::before,
+        .mission-tag::after {
+            margin: 0 0.5rem;
+        }
+        .scroll-hint {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+        }
+        .scroll-hint .arrow {
+            height: 35px;
+        }
+    }
+
+    /* Short screens (landscape phones): shrink the scroll hint area */
+    @media (max-height: 600px) {
+        .hero {
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+        }
+        .scroll-hint {
+            bottom: 1rem;
+        }
+    }
+
     @media (prefers-reduced-motion: reduce) {
         .mission-tag,
         .hero-title,
